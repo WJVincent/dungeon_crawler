@@ -21,20 +21,21 @@ impl Map {
     pub fn render(&self, ctx: &mut BTerm) {
         for y in 0..SCREEN_HEIGHT {
             for x in 0..SCREEN_WIDTH {
-                let i = map_idx(x, y);
-                match self.tiles[i] {
-                    TileType::Floor => {
+                let i = find_idx(x, y);
+                match self.tiles.get(i) {
+                    Some(TileType::Floor) => {
                         ctx.set(x, y, PURPLE, BLACK, to_cp437('.'));
                     }
-                    TileType::Wall => {
+                    Some(TileType::Wall) => {
                         ctx.set(x, y, GREEN, WHITE, to_cp437('#'));
                     }
+                    _ => {}
                 }
             }
         }
     }
 
-    pub fn in_bounds(&self, point: Point) -> bool {
+    pub fn in_bounds(point: Point) -> bool {
         let in_x = point.x >= 0 && point.x < SCREEN_WIDTH;
         let in_y = point.y >= 0 && point.y < SCREEN_HEIGHT;
 
@@ -42,14 +43,14 @@ impl Map {
     }
 
     pub fn can_enter_tile(&self, point: Point) -> bool {
-        self.in_bounds(point) && self.tiles[map_idx(point.x, point.y)] == TileType::Floor
+        Map::in_bounds(point) && self.tiles[find_idx(point.x, point.y)] == TileType::Floor
     }
 
-    pub fn try_idx(&self, point: Point) -> Option<usize> {
-        if !self.in_bounds(point) {
-            None
+    pub fn try_idx(point: Point) -> Option<usize> {
+        if Map::in_bounds(point) {
+            Some(find_idx(point.x, point.y))
         } else {
-            Some(map_idx(point.x, point.y))
+            None
         }
     }
 }
@@ -58,6 +59,6 @@ impl Map {
 // x = index % width
 // y = index / width rounded down
 
-pub fn map_idx(x: i32, y: i32) -> usize {
-    ((y * SCREEN_WIDTH) + x) as usize
+pub fn find_idx(x: i32, y: i32) -> usize {
+    usize::try_from((y * SCREEN_WIDTH) + x).unwrap()
 }

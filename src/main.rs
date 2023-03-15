@@ -1,3 +1,4 @@
+#![warn(clippy::all, clippy::pedantic)]
 mod map;
 mod player;
 
