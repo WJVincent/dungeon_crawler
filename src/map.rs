@@ -18,18 +18,33 @@ impl Map {
         }
     }
 
-    pub fn render(&self, ctx: &mut BTerm) {
-        for y in 0..SCREEN_HEIGHT {
-            for x in 0..SCREEN_WIDTH {
-                let i = find_idx(x, y);
-                match self.tiles.get(i) {
-                    Some(TileType::Floor) => {
-                        ctx.set(x, y, PURPLE, BLACK, to_cp437('.'));
+    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
+        ctx.set_active_console(0);
+        for y in camera.top_y..camera.bottom_y {
+            for x in camera.left_x..camera.right_x {
+                if Map::in_bounds(Point::new(x, y)) {
+                    let idx = find_idx(x, y);
+                    match self.tiles.get(idx) {
+                        Some(TileType::Floor) => {
+                            ctx.set(
+                                x - camera.left_x,
+                                y - camera.top_y,
+                                PURPLE,
+                                BLACK,
+                                to_cp437('.'),
+                            );
+                        }
+                        Some(TileType::Wall) => {
+                            ctx.set(
+                                x - camera.left_x,
+                                y - camera.top_y,
+                                SADDLE_BROWN,
+                                BLACK,
+                                to_cp437('#'),
+                            );
+                        }
+                        _ => {}
                     }
-                    Some(TileType::Wall) => {
-                        ctx.set(x, y, GREEN, WHITE, to_cp437('#'));
-                    }
-                    _ => {}
                 }
             }
         }
