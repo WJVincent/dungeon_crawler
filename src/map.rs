@@ -18,38 +18,6 @@ impl Map {
         }
     }
 
-    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
-        ctx.set_active_console(0);
-        for y in camera.top_y..camera.bottom_y {
-            for x in camera.left_x..camera.right_x {
-                if Map::in_bounds(Point::new(x, y)) {
-                    let idx = find_idx(x, y);
-                    match self.tiles.get(idx) {
-                        Some(TileType::Floor) => {
-                            ctx.set(
-                                x - camera.left_x,
-                                y - camera.top_y,
-                                PURPLE,
-                                BLACK,
-                                to_cp437('.'),
-                            );
-                        }
-                        Some(TileType::Wall) => {
-                            ctx.set(
-                                x - camera.left_x,
-                                y - camera.top_y,
-                                SADDLE_BROWN,
-                                BLACK,
-                                to_cp437('#'),
-                            );
-                        }
-                        _ => {}
-                    }
-                }
-            }
-        }
-    }
-
     pub fn in_bounds(point: Point) -> bool {
         let in_x = point.x >= 0 && point.x < SCREEN_WIDTH;
         let in_y = point.y >= 0 && point.y < SCREEN_HEIGHT;
