@@ -6,6 +6,8 @@ pub struct Render {
     pub glyph: FontCharType,
 }
 
-// empty struct serves as a tag, indicating that this entity is a player
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Player;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Enemy;
