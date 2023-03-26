@@ -9,6 +9,7 @@ pub enum TileType {
 
 pub struct Map {
     pub tiles: Vec<TileType>,
+    pub revealed_tiles: Vec<bool>,
 }
 
 impl BaseMap for Map {
@@ -33,6 +34,10 @@ impl BaseMap for Map {
     fn get_pathing_distance(&self, idx1: usize, idx2: usize) -> f32 {
         DistanceAlg::Pythagoras.distance2d(self.index_to_point2d(idx1), self.index_to_point2d(idx2))
     }
+
+    fn is_opaque(&self, idx: usize) -> bool {
+        self.tiles[idx as usize] != TileType::Floor
+    }
 }
 
 impl Algorithm2D for Map {
@@ -48,6 +53,7 @@ impl Map {
     pub fn new() -> Self {
         Self {
             tiles: vec![TileType::Floor; NUM_TILES],
+            revealed_tiles: vec![false; NUM_TILES],
         }
     }
 
@@ -90,5 +96,5 @@ impl Map {
 // y = index / width rounded down
 
 pub fn find_idx(x: i32, y: i32) -> usize {
-    usize::try_from((y * SCREEN_WIDTH) + x).unwrap()
+    ((y * SCREEN_WIDTH) + x) as usize
 }
