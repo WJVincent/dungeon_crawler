@@ -9,6 +9,7 @@ pub enum TileType {
 
 pub struct Map {
     pub tiles: Vec<TileType>,
+    pub revealed_tiles: Vec<bool>,
 }
 
 impl BaseMap for Map {
@@ -52,6 +53,7 @@ impl Map {
     pub fn new() -> Self {
         Self {
             tiles: vec![TileType::Floor; NUM_TILES],
+            revealed_tiles: vec![false; NUM_TILES],
         }
     }
 
@@ -94,5 +96,5 @@ impl Map {
 // y = index / width rounded down
 
 pub fn find_idx(x: i32, y: i32) -> usize {
-    usize::try_from((y * SCREEN_WIDTH) + x).unwrap()
+    ((y * SCREEN_WIDTH) + x) as usize
 }
